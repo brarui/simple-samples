@@ -9,14 +9,14 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-void forker(int numeroDeProcessos, char ** nomeDoFicheiro)
+void forker(int processNumbers, char ** fileNames)
 {
     pid_t pid;
     int fd[2];
-    int sucesso = 0;
+    int success = 0;
     
     pipe(fd);
-    if(numeroDeProcessos > 0)
+    if(processNumbers > 0)
     {
         if ((pid = fork()) < 0)
         {
@@ -24,39 +24,39 @@ void forker(int numeroDeProcessos, char ** nomeDoFicheiro)
         }
         else if (pid == 0)
         {
-            // FILHO 
-            //printf("Filho com PID: %d\n", getpid());
-            if(fopen(nomeDoFicheiro[numeroDeProcessos], "r")){
-                sucesso = 1;
-                write(fd[1], &sucesso, sizeof(sucesso));
-                //printf("(Filho) Sucesso a ler: %s\n", nomeDoFicheiro[numeroDeProcessos]);
+            // Child
+            //printf("Child PID: %d\n", getpid());
+            if(fopen(fileNames[processNumbers], "r")){
+                success = 1;
+                write(fd[1], &success, sizeof(success));
+                //printf("(Child) success reading: %s\n", fileNames[processNumbers]);
             }
             else{
-                sucesso = 0;
-                write(fd[1], &sucesso, sizeof(sucesso));
-                //printf("(Filho) Problema a ler: %s\n", nomeDoFicheiro[numeroDeProcessos]);
+                success = 0;
+                write(fd[1], &success, sizeof(success));
+                //printf("(Child) Problema reading: %s\n", fileNames[processNumbers]);
             }
         }
         else if(pid > 0)
         {
-            // PAI
-            read(fd[0], &sucesso, sizeof(sucesso));
-            if(sucesso){
-                printf("(Pai) Sucesso a ler: %s\n", nomeDoFicheiro[numeroDeProcessos]);
+            // Parent
+            read(fd[0], &success, sizeof(success));
+            if(success){
+                printf("(Parent) success reading: %s\n", fileNames[processNumbers]);
             }
             else{
-                printf("(Pai Problema a ler: %s\n", nomeDoFicheiro[numeroDeProcessos]);
+                printf("(Parent Problema reading: %s\n", fileNames[processNumbers]);
             }
-            forker(numeroDeProcessos - 1, nomeDoFicheiro);
+            forker(processNumbers - 1, fileNames);
         }
     }
 }
 
 int main(int argc, char *argv[])
 {
-    int numeroDeProcessos = argc - 1;
+    int processNumbers = argc - 1;
     
-    forker(numeroDeProcessos, argv);
+    forker(processNumbers, argv);
 
     return 0;
 }
