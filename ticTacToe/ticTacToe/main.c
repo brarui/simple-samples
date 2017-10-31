@@ -9,54 +9,42 @@
 
 #include <stdio.h>
 
-#define linhas 3
-#define colunas 3
+#define lines 3
+#define columns 3
 
-void iniciarTabulerio(char tabuleiro[linhas][colunas]) {
-    for (int i = 0; i < linhas; i++)
+void inicializeBoard(char board[lines][columns]) {
+    for (int i = 0; i < lines; i++)
     {
-        for (int j = 0; j < colunas; j++)
+        for (int j = 0; j < columns; j++)
         {
-            tabuleiro[i][j] = ' ';
+            board[i][j] = ' ';
         }
     }
 };
 
-void mostrarTabuleiro(char tabuleiro[linhas][colunas]) {
-    for (int i = 0; i < linhas; i++)
+void showBoard(char board[lines][columns]) {
+    for (int i = 0; i < lines; i++)
     {
         printf("---------------------\n");
         printf("|     ||     ||     |\n");
-        for (int j = 0; j < colunas; j++)
+        for (int j = 0; j < columns; j++)
         {
-            printf("|  %c  |", tabuleiro[i][j]);
+            printf("|  %c  |", board[i][j]);
         }
         printf("\n|     ||     ||     |\n");
     }
     printf("---------------------\n");
 }
 
-void mostrarTabuleiroVazio() {
-    int coordenada = 0;
-    for (int i = 0; i < linhas; i++)
-    {
-        for (int j = 0; j < colunas; j++, coordenada++)
-        {
-            printf("| %d |", coordenada);
-        }
-        printf("\n");
-    }
-}
-
-void mostrarTabuleiroParaJogar() {
-    int coordenada = 1;
+void showBoardInstructions() {
+    int coordinate = 1;
     
-    printf("     %d    %d   %d\n", coordenada, coordenada + 1, coordenada + 2);
+    printf("     %d    %d   %d\n", coordinate, coordinate + 1, coordinate + 2);
     
-    for (int i = 0; i < linhas; i++)
+    for (int i = 0; i < lines; i++)
     {
-        printf(" %d ", coordenada + i);
-        for (int j = 0; j < colunas; j++)
+        printf(" %d ", coordinate + i);
+        for (int j = 0; j < columns; j++)
         {
             printf("|   |");
         }
@@ -67,67 +55,75 @@ void mostrarTabuleiroParaJogar() {
 int GetInt(int minimum, int maximum){
     int number;
     do{
-        printf("Escolha um valor entre 1 e 3: ");
+        printf("Pick a number between %d and %d: ", minimum, maximum);
         scanf("%d", &number);
     }while(number < minimum || number > maximum );
     return number;
 }
 
-void jogar(char tabuleiro[linhas][colunas], char jogador) {
-    int coordenadaLinha = -1, coordenadaColuna = -1;
+void play(char board[lines][columns], char player) {
+    int lineCoordinate = -1, columnCoordinate = -1;
     
-    //mostrarTabuleiroVazio();
-    mostrarTabuleiroParaJogar();
+    showBoardInstructions();
     
-    printf("\nJogador %c\nQual a sua jogada?\n", jogador);
+    printf("\nPlayer %c\nWhat's your move?\n", player);
     do{
-        coordenadaLinha = GetInt(1,3) - 1;
-        coordenadaColuna = GetInt(1,3) - 1;
+        lineCoordinate = GetInt(1,3) - 1;
+        columnCoordinate = GetInt(1,3) - 1;
         
-        if(tabuleiro[coordenadaLinha][coordenadaColuna] != ' ')
+        if(board[lineCoordinate][columnCoordinate] != ' ')
             printf("Invalid play.\nTry again.\n");
     }
-    while(tabuleiro[coordenadaLinha][coordenadaColuna] != ' ');
+    while(board[lineCoordinate][columnCoordinate] != ' ');
     
-    tabuleiro[coordenadaLinha][coordenadaColuna] = jogador;
+    board[lineCoordinate][columnCoordinate] = player;
 
 }
 
-int verificarLinhas(char tabuleiro[linhas][colunas]) {
-    for (int i = 0; i < linhas; i++)
+int checkLines(char board[lines][columns]) {
+    for (int i = 0; i < lines; i++)
     {
-        if (tabuleiro[i][0] != ' ' && tabuleiro[i][0] == tabuleiro[i][1] && tabuleiro[i][0] == tabuleiro[i][2])
+        if (board[i][0] != ' ' && board[i][0] == board[i][1] && board[i][0] == board[i][2])
             return 1;
     }
     return 0;
 }
 
-int verificarColunas(char tabuleiro[linhas][colunas]) {
-    for (int i = 0; i < colunas; i++)
+int checkColumns(char board[lines][columns]) {
+    for (int i = 0; i < columns; i++)
     {
-        if (tabuleiro[0][i] != ' ' && tabuleiro[0][i] == tabuleiro[1][i] && tabuleiro[0][i] == tabuleiro[2][i])
+        if (board[0][i] != ' ' && board[0][i] == board[1][i] && board[0][i] == board[2][i])
             return 1;
     }
     return 0;
 }
 
-int verificarDiagonais(char tabuleiro[linhas][colunas]) {
-    if ((tabuleiro[0][0] != ' ' && tabuleiro[0][0] == tabuleiro[1][1] && tabuleiro[0][0] == tabuleiro[2][2])
-        || (tabuleiro[0][2] != ' ' && tabuleiro[0][2] == tabuleiro[1][1] && tabuleiro[0][0] == tabuleiro[2][0]))
+int checkDiagonals(char board[lines][columns]) {
+    if ((board[0][0] != ' ' && board[0][0] == board[1][1] && board[0][0] == board[2][2])
+        || (board[0][2] != ' ' && board[0][2] == board[1][1] && board[0][0] == board[2][0]))
         return 1;
     else
         return 0;
 }
 
-int verificarVitoria(char tabuleiro[linhas][colunas], char jogador) {
-    if (verificarLinhas(tabuleiro) || verificarColunas(tabuleiro) || verificarDiagonais(tabuleiro))
+int isVictory(char board[lines][columns], char player) {
+    if (checkLines(board) || checkColumns(board) || checkDiagonals(board))
         return 1;
     else
         return 0;
 }
 
-char trocarJogador(char jogadorAtivo) {
-    if (jogadorAtivo == 'X')
+int isEndOfGame(char board[lines][columns]) {
+    int i, j;
+    for(i = 0; i < lines; i++)
+        for(j = 0; j < columns; j++)
+            if (board[i][j] == ' ' )
+                return 0;
+    return 1;
+}
+
+char changePlayers(char activePlayer) {
+    if (activePlayer == 'X')
         return 'O';
     else
         return 'X';
@@ -135,32 +131,35 @@ char trocarJogador(char jogadorAtivo) {
 
 int main()
 {
-    char tabuleiro[linhas][colunas];
-    char jogadorAtivo;
-    int resultadoJogo;
-    iniciarTabulerio(tabuleiro);
+    char board[lines][columns];
+    char activePlayer;
+    int matchResult;
+    inicializeBoard(board);
     
-    jogadorAtivo = 'X';
-    resultadoJogo = 0;
+    activePlayer = 'X';
+    matchResult = 0;
     do
     {
         system("clear");
-        mostrarTabuleiro(tabuleiro);
-        jogar(tabuleiro, jogadorAtivo);
-        if (verificarVitoria(tabuleiro, jogadorAtivo)) {
-            resultadoJogo = 1;
+        showBoard(board);
+        play(board, activePlayer);
+        if (isVictory(board, activePlayer)) {
+            matchResult = 1;
             break;
         }
-        else
-            jogadorAtivo = trocarJogador(jogadorAtivo);
+        else{
+            if(isEndOfGame(board))
+                break;
+            else
+                activePlayer = changePlayers(activePlayer);
+        }
     } while (1);
     
-    mostrarTabuleiro(tabuleiro);
-    if (resultadoJogo)
-        printf("Parabens Jogador %c\n\n", jogadorAtivo);
+    showBoard(board);
+    if (matchResult)
+        printf("Congradulations Player %c\n\n", activePlayer);
     else
-        printf("Empate! Acontece...\n\n");
-    
+        printf("Draw! Better luck next time...\n\n");
     
     return 0;
 }
