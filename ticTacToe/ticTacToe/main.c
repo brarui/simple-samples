@@ -49,16 +49,16 @@ void mostrarTabuleiroVazio() {
 }
 
 void mostrarTabuleiroParaJogar() {
-    int coordenada = 0;
+    int coordenada = 1;
     
     printf("     %d    %d   %d\n", coordenada, coordenada + 1, coordenada + 2);
     
     for (int i = 0; i < linhas; i++)
     {
-        printf(" %d ", coordenada);
+        printf(" %d ", coordenada + i);
         for (int j = 0; j < colunas; j++)
         {
-            printf("| %d |", coordenada++);
+            printf("|   |");
         }
         printf("\n");
     }
@@ -79,7 +79,7 @@ void jogar(char tabuleiro[linhas][colunas], char jogador) {
     //mostrarTabuleiroVazio();
     mostrarTabuleiroParaJogar();
     
-    printf("Jogador %c\nQual a sua jogada? ", jogador);
+    printf("\nJogador %c\nQual a sua jogada?\n", jogador);
     do{
         coordenadaLinha = GetInt(1,3) - 1;
         coordenadaColuna = GetInt(1,3) - 1;
@@ -90,29 +90,7 @@ void jogar(char tabuleiro[linhas][colunas], char jogador) {
     while(tabuleiro[coordenadaLinha][coordenadaColuna] != ' ');
     
     tabuleiro[coordenadaLinha][coordenadaColuna] = jogador;
-//    switch (coordenada) {
-//        case 0: tabuleiro[0][0] = jogador;
-//            break;
-//        case 1: tabuleiro[0][1] = jogador;
-//            break;
-//        case 2: tabuleiro[0][2] = jogador;
-//            break;
-//        case 3: tabuleiro[1][0] = jogador;
-//            break;
-//        case 4: tabuleiro[1][1] = jogador;
-//            break;
-//        case 5: tabuleiro[1][2] = jogador;
-//            break;
-//        case 6: tabuleiro[2][0] = jogador;
-//            break;
-//        case 7: tabuleiro[2][1] = jogador;
-//            break;
-//        case 8: tabuleiro[2][2] = jogador;
-//            break;
-//        default:
-//            break;
-//    }
-    
+
 }
 
 int verificarLinhas(char tabuleiro[linhas][colunas]) {
@@ -177,6 +155,7 @@ int main()
             jogadorAtivo = trocarJogador(jogadorAtivo);
     } while (1);
     
+    mostrarTabuleiro(tabuleiro);
     if (resultadoJogo)
         printf("Parabens Jogador %c\n\n", jogadorAtivo);
     else
